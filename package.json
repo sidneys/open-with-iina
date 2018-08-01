@@ -1,0 +1,46 @@
+{
+  "name": "open-with-iina",
+  "version": "1.0.0",
+  "description": "Discover & open web-based media inside macOS' IINA media player",
+  "license": "MIT",
+  "homepage": "https://github.com/sidneys/open-with-iina",
+  "author": {
+    "name": "sidneys",
+    "email": "sidneys.github.io@outlook.com",
+    "url": "https://sidneys.github.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sidneys/open-with-iina.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sidneys/open-with-iina/issues"
+  },
+  "keywords": [
+    "Web Extension",
+    "Firefox",
+    "Chrome",
+    "Chromium",
+    "macOS",
+    "IINA"
+  ],
+  "devDependencies": {
+    "app-root-path": "^2.1.0",
+    "eslint": "^5.2.0",
+    "jsonfile": "^4.0.0",
+    "onchange": "^4.1.0",
+    "web-ext": "^2.8.0"
+  },
+  "scripts": {
+    "build": "web-ext build",
+    "bump": "npm run version:all patch",
+    "deploy": "npm run package",
+    "lint": "eslint ./webextension && web-ext lint",
+    "package": "npm run build",
+    "postpackage": "npm run sign",
+    "prepackage": "npm run lint",
+    "sign": "web-ext sign --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET",
+    "start": "onchange '**/*.js' --wait --exclude './webextension/dist/**/*.js' -- npm run build",
+    "version:all": "node ./lib/version-all.js"
+  }
+}
