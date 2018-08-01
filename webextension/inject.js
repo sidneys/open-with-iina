@@ -2,27 +2,51 @@
 
 
 /**
- * Check YouTube URL
+ * Vendor Regex Dictionary
+ * @type {Object}
+ * @constant
  */
-let checkYoutubeUrl = () => {
-    console.debug('checkYoutubeUrl')
+const vendorRegexDictionary = {
+    'instagram': /^.*?(?:instagram\.com\/p\/)(.*?)\/?$/gi,
+    'youtube': /(youtu.be\/|v\/|u\/\w\/|embed\/|channel\/|playlist\?list=|watch\?v=|[a-zA-Z0-9_\-]+\?v=)([^#\&\?\n<>\'\"]*)/gi,
+    'vimeo': /(http|https)?:\/\/(www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|)(\d+|[a-zA-Z]+)(?:|\/\?)/gi
+}
 
-    if (window.location.hostname === 'www.youtube.com') {
+/**
+ * Is Vendor Url?
+ * @param {String} url - URL
+ * @returns {Boolean} - Yes / No
+ */
+let isVendorUrl = (url) => {
+    console.debug('isVendorUrl')
+
+    const urlObject = new URL(url)
+    const urlHref = urlObject.href
+
+    return Object.values(vendorRegexDictionary).some(vendorRegex => vendorRegex.test(urlHref))
+}
+
+
+/**
+ * Add new URLs
+ * @param {Array=} urls - URLs
+ */
+let addUrls = (urls = []) => {
+    console.debug('addUrls')
+
+    if (isVendorUrl(window.location.href)) {
+        console.debug('addUrls', 'vendor urls found:', window.location.href)
+
         chrome.runtime.sendMessage({
             method: 'add-urls',
             urls: [window.location.href]
         })
-    }
-}
 
-/**
- * Add new URL
- * @param {Array} urls - URLs
- */
-let addUrls = (urls) => {
-    console.debug('addUrls', 'urls:', ...urls)
+        return
+    }
 
     if (urls.length === 0) { return }
+    console.debug('addUrls', 'non-vendor urls found:', ...urls)
 
     urls = urls.filter(String)
 
@@ -46,11 +70,10 @@ chrome.runtime.onMessage.addListener((request) => {
         case 'did-update':
             console.debug(`chrome.runtime.onMessage#${request.method}`)
 
-            checkYoutubeUrl()
+            addUrls()
             break
     }
 })
-
 
 
 /**

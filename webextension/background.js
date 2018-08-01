@@ -49,6 +49,18 @@ const menuTitle = 'Send to IINA:'
 let urlList = []
 
 
+
+/**
+ * Check if URL is text document
+ * @param {String} url - URL
+ * @returns {Boolean} - Yes / No
+ */
+let isTextDocument = (url) => {
+    console.debug('isDocument')
+
+    return /.*(?:css|css3|htm|txt|php|php3|html)/g.test(url)
+}
+
 /**
  * Show native Notification
  * @param {String} title - Title
@@ -207,10 +219,16 @@ let registerUrls = (urls, tabId) => {
     console.debug('registerUrls')
     // console.debug('registerUrls', 'urls:', ...urls)
 
-    // Register & cleanup URLs
+    // Register
     urlList = urlList.concat(urls)
+
+    // Cleanup
     urlList = urlList.filter(String)
     urlList = [...new Set(urlList)]
+
+    // Filter
+    urlList = urlList.filter(url => !isTextDocument(url))
+
     console.debug('urlList', ...urlList)
 
     if (urlList.length === 0) { return }

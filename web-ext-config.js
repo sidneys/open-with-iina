@@ -9,8 +9,5 @@ module.exports = {
     },
     lint: {
         output: 'text'
-    },
-    run: {
-        firefox: 'nightly'
     }
 }
