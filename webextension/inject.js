@@ -41,19 +41,19 @@ let addUrls = (urls = []) => {
             method: 'add-urls',
             urls: [window.location.href]
         })
-
-        return
     }
+    else {
+        if (urls.length === 0) { return }
 
-    if (urls.length === 0) { return }
-    console.debug('addUrls', 'non-vendor urls found:', ...urls)
+        console.debug('addUrls', 'non-vendor urls found:', ...urls)
 
-    urls = urls.filter(String)
+        urls = urls.filter(String)
 
-    chrome.runtime.sendMessage({
-        method: 'add-urls',
-        urls: [...urls]
-    })
+        chrome.runtime.sendMessage({
+            method: 'add-urls',
+            urls: [...urls]
+        })
+    }
 }
 
 

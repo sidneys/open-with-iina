@@ -1,6 +1,6 @@
 {
   "name": "open-with-iina",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Discover & open web-based media inside macOS' IINA media player",
   "license": "MIT",
   "homepage": "https://github.com/sidneys/open-with-iina",
@@ -28,19 +28,18 @@
     "app-root-path": "^2.1.0",
     "eslint": "^5.2.0",
     "jsonfile": "^4.0.0",
-    "onchange": "^4.1.0",
     "web-ext": "^2.8.0"
   },
   "scripts": {
     "build": "web-ext build",
     "bump": "npm run version:all patch",
     "deploy": "npm run package",
-    "lint": "eslint ./webextension && web-ext lint",
+    "lint": "eslint . && web-ext lint",
     "package": "npm run build",
     "postpackage": "npm run sign",
     "prepackage": "npm run lint",
     "sign": "web-ext sign --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET",
-    "start": "onchange '**/*.js' --wait --exclude './webextension/dist/**/*.js' -- npm run build",
+    "start": "web-ext run",
     "version:all": "node ./lib/version-all.js"
   }
 }
