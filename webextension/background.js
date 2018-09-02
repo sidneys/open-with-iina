@@ -67,7 +67,7 @@ let isTextDocument = (url) => {
  * @param {String} message - Message
  */
 let showNotification = (title, message) => {
-    console.debug('showNotification')
+    console.debug('showNotification', 'title:', title, 'message:', message)
 
     chrome.notifications.create({
         type: 'basic',
@@ -84,7 +84,7 @@ let showNotification = (title, message) => {
  * @param {String=} tabId - Tab
  */
 let setIconImage = (label, tabId) => {
-    console.debug('setIconImage')
+    console.debug('setIconImage', 'label:', label, 'tabId:', tabId)
 
     chrome.browserAction.setIcon({
         path: iconImageDictionary[label],
@@ -98,7 +98,7 @@ let setIconImage = (label, tabId) => {
  * @param {String=} tabId - Tab
  */
 let setIconBadgeColor = (color, tabId) => {
-    console.debug('setIconBadgeColor')
+    console.debug('setIconBadgeColor', 'color:', color, 'tabId:', tabId)
 
     chrome.browserAction.setBadgeBackgroundColor({
         color: color,
@@ -112,7 +112,7 @@ let setIconBadgeColor = (color, tabId) => {
  * @param {String=} tabId - Tab
  */
 let setIconBadgeText = (text, tabId) => {
-    console.debug('setIconBadgeText')
+    console.debug('setIconBadgeText', 'text:', text, 'tabId:', tabId)
 
     chrome.browserAction.setBadgeText({
         text: text,
@@ -138,13 +138,13 @@ let basename = (url) => {
 /**
  * Create App URL / Scheme URL
  * @param {String} url - URL
- * @param {Boolean=} add - Add to playlist Yes/No
+ * @param {Boolean=} Enqueue - Enqueue in playlist instead of replacing playlist
  * @returns {String} - Encoded URL
  */
-let createAppUrl = (url, add = true) => {
-    console.debug('createAppUrl', 'url', url, 'add', add)
+let createAppUrl = (url, enqueue = true) => {
+    console.debug('createAppUrl', 'url:', url, 'enqueue:', enqueue)
 
-    return `iina://weblink?url=${encodeURIComponent(url)}&add=${encodeURIComponent(add)}`
+    return `iina://weblink?url=${encodeURIComponent(url)}&enqueue=${Boolean(enqueue) === true ? '1': '0'}`
 }
 
 /**
@@ -152,7 +152,7 @@ let createAppUrl = (url, add = true) => {
  * @param {String} url - URL
  */
 let openUrl = (url) => {
-    console.debug('openUrl', 'url', url)
+    console.debug('openUrl', 'url:', url)
 
     // Lookup URL Components via URL API
     const urlObject = new URL(url)
@@ -167,7 +167,7 @@ let openUrl = (url) => {
             return
         }
 
-        // Default: add URL to active playlist
+        // Default: Enqueue URL
         let shouldEnqueueUrl = true
 
         // YouTube Playlists: replace active playlist
@@ -182,7 +182,7 @@ let openUrl = (url) => {
             allFrames: false,
             runAt: 'document_start',
             code: `(window.parent ? window.parent : window).location.assign('${iinaUrl}')`
-        }, () => showNotification((shouldEnqueueUrl ? 'Adding new weblink to IINA' : 'Opening weblink in IINA'), basename(urlHref)))
+        }, () => showNotification((shouldEnqueueUrl ? 'Enqueueing URL' : 'Opening URL'), basename(urlHref)))
 
         console.debug('iinaUrl: ', iinaUrl)
     })
